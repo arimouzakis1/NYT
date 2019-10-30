@@ -1,5 +1,6 @@
 package com.example.nyt;
 
+import android.app.DownloadManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,17 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class ArticleRecyclerFragment extends Fragment {
@@ -36,12 +48,42 @@ public class ArticleRecyclerFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        ArticleAdapter articleAdapter = new ArticleAdapter();
+        final ArticleAdapter articleAdapter = new ArticleAdapter();
+
+        final RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
+        String url = "https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key="+getString(R.string.api_key);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Gson gson = new Gson();
+                TopNewsStories topNewsStories = gson.fromJson(response, TopNewsStories.class);
+                articleAdapter.setData((ArrayList<Article>) topNewsStories.results);
+                recyclerView.setAdapter(articleAdapter);
+                requestQueue.stop();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Error receiving response from API");
+                requestQueue.stop();
+            }
+        });
+
+        requestQueue.add(stringRequest);
 
         // We wrote our setData method to be like a setter, so we give our ArrayList from
         // FakeDatabase to the Adapter.
-        articleAdapter.setData(FakeDatabase.getAllArticles());
-        recyclerView.setAdapter(articleAdapter);
+
+        //This is where the data is set... However now we want to parse the data from JSON rather than from the FakeDatabase file...
+//        Gson gson = new Gson();
+//        TopNewsStories topNewsStories = gson.fromJson(FakeApi.getMostViewedStoriesJsonString(), TopNewsStories.class);
+//
+//        FakeDatabase.addDataToFakeDatabaseFromJson((ArrayList<Article>) topNewsStories.results);
+//
+//        articleAdapter.setData(FakeDatabase.getAllJsonArticles());
+//        recyclerView.setAdapter(articleAdapter);
 
         return view;
     }

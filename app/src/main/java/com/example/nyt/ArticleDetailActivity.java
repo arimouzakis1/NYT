@@ -23,11 +23,11 @@ public class ArticleDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         // Get the extra identified by "ArticleID" that was put into the intent at the origin.
-        int articleID = intent.getIntExtra("ArticleID", 0);
+        long articleID = intent.getLongExtra("ArticleID", 0);
 
         // Now that we were passed the ID of the clicked item, we can get the rest of the data
         // from the "database". Imagine this could be a real SQL database.
-        Article article = FakeDatabase.getArticleById(articleID);
+        Article article = FakeDatabase.getJsonArticleById(articleID);
 
         headlineTextView = findViewById(R.id.detailHeadline);
         authorTextView = findViewById(R.id.detailAuthor);
@@ -44,6 +44,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // We'll learn the way to load images from the internet in a later week.
 
         // BUT we have included a way to show images that works for now.
-        imageView.setImageResource(article.getImageDrawableId());
+//        imageView.setImageResource(article.getImageDrawableId());
     }
 }

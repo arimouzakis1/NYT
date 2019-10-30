@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">NYT</string>
+    <string name="app_name">W6ChallengeNYT</string>
     <string name="articles">Articles</string>
     <string name="books">Books</string>
     <string name="profile">Profile</string>
+    <string name="api_key">rE6JmcQXAs9l61J0hrtAP9cJChlAaos4</string>
 </resources>

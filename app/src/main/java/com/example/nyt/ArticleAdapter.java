@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 // We need to give a type in angle brackets <> when we extend RecyclerView.Adapter
@@ -19,7 +21,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     // class variable that holds the data that we want to adapt
     private ArrayList<Article> articlesToAdapt;
 
-    public void setData(ArrayList<Article> articlesToAdapt) {
+    void setData(ArrayList<Article> articlesToAdapt) {
         // This is basically a Setter that we use to give data to the adapter
         this.articlesToAdapt = articlesToAdapt;
     }
@@ -36,8 +38,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
         // Then create an instance of your custom ViewHolder with the View you got from inflating
         // the layout.
-        ArticleViewHolder articleViewHolder = new ArticleViewHolder(view);
-        return articleViewHolder;
+        return new ArticleViewHolder(view);
     }
 
     @Override
@@ -52,13 +53,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         holder.headlineTextView.setText(articleAtPosition.getHeadline());
         holder.summaryTextView.setText(articleAtPosition.getSummary());
 
+        Glide.with(holder.view.getContext()).load(articleAtPosition.getImageUrl()).into(holder.itemImageView);
+//        System.out.println(articleAtPosition.getImageUrl());
+
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
 
-                Intent intent = new Intent(context, ArticleDetailActivity.class);
+                Intent intent = new Intent(context, ArticleDetailActivity2.class);
                 intent.putExtra("ArticleID", articleAtPosition.getArticleID());
                 context.startActivity(intent);
             }
@@ -76,7 +80,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             }
         });
 
-        holder.itemImageView.setImageResource(articleAtPosition.getImageDrawableId());
+//        holder.itemImageView.setImageResource(articleAtPosition.getImageDrawableId());
     }
 
     @Override
@@ -92,6 +96,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         public TextView summaryTextView;
         public ImageView shareImageView;
         public ImageView itemImageView;
+        public ImageView bookmarkImageView;
+        public boolean isBookmarked = false;
 
         // This constructor is used in onCreateViewHolder
         public ArticleViewHolder(View v) {
@@ -101,6 +107,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             summaryTextView = v.findViewById(R.id.newsDetails);
             shareImageView = v.findViewById(R.id.newsShareButton);
             itemImageView = v.findViewById(R.id.newsPhoto);
+            bookmarkImageView = v.findViewById(R.id.newsSaveButton);
+
+            bookmarkImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(isBookmarked) {
+                        bookmarkImageView.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                    } else {
+                        bookmarkImageView.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                    }
+                    isBookmarked = !isBookmarked;
+                }
+            });
         }
     }
 }
