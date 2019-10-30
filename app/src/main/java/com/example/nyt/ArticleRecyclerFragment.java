@@ -59,6 +59,7 @@ public class ArticleRecyclerFragment extends Fragment {
                 Gson gson = new Gson();
                 TopNewsStories topNewsStories = gson.fromJson(response, TopNewsStories.class);
                 articleAdapter.setData((ArrayList<Article>) topNewsStories.results);
+                FakeDatabase.addDataToFakeDatabaseFromJson((ArrayList<Article>) topNewsStories.results);
                 recyclerView.setAdapter(articleAdapter);
                 requestQueue.stop();
 
